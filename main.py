@@ -4,6 +4,10 @@ from kaki.app import App
 from kivy.factory import Factory
 from DataBase.DataBaseSQL import ConnectDataBase
 
+start = ConnectDataBase()
+start.create_table()
+
+
 # main app class for kaki app with kivymd modules
 class MathShow(MDApp, App):
     """ Hi Windows users """
@@ -32,8 +36,9 @@ class MathShow(MDApp, App):
         return Factory.MainScreenManager()
 
 
-
+#start = ConnectDataBase()
 
 # finally, run the app
 if __name__ == "__main__":
     MathShow().run()
+
