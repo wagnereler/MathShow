@@ -46,18 +46,18 @@ class ConnectDataBase(Connection):
             """
         create_setting_tb = \
             """
-                CREATE TABLE IF NOT EXISTS setting (
+                CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER,
                     mode_id INTEGER,
                     language_id INTEGER,
                     speed INT
                     
-                    CONSTRAINT FK_setting_user,
+                    CONSTRAINT FK_settings_user,
                     FOREIGN KEY (user_id)
                     REFERENCES user (id)
                     
-                    CONSTRAINT FK_setting_language
+                    CONSTRAINT FK_settings_language
                     FOREIGN KEY (language_id)
                     REFERENCES language (id)
                     
@@ -166,13 +166,50 @@ class ConnectDataBase(Connection):
             self.initial_load = True
         return self.initial_load
 
+    def inserting_language(self):
+        insert_language = """INSERT INTO language (name) 
+VALUES ('English'), ('Português'), ('Español');
+"""
+        if self.check_initial_load('language'):
+            try:
+                self.cur.execute(insert_language)
+                self.save()
+            except Exception as error:
+                return f'An error occurred while inserting in the table: {error}'
+            self.initial_load = False
+            return True
+
     def inserting_user_default(self):
         insert_user_default = "INSERT INTO user (name, age) VALUES ('User', 0);"
-        if self.check_initial_load('user', 'WHERE 1 = 1', 'AND 2 = 2'):
+        if self.check_initial_load('user'):
             try:
                 self.cur.execute(insert_user_default)
                 self.save()
             except Exception as error:
-                return f'An error occurred while creating the table: {error}'
+                return f'An error occurred while inserting in the table: {error}'
+            self.initial_load = False
+            return True
+
+    def inserting_mode(self):
+        insert_user_default = """INSERT INTO mode (name)
+VALUES ('multiplication'), ('division'), ('addition'), ('subtraction');"""
+        if self.check_initial_load('mode'):
+            try:
+                self.cur.execute(insert_user_default)
+                self.save()
+            except Exception as error:
+                return f'An error occurred while inserting in the table: {error}'
+            self.initial_load = False
+            return True
+
+    def inserting_user_settings(self):
+        insert_user_default = """INSERT INTO settings (user_id,  mode_id, language_id, speed)
+VALUES (1, 1, 1, 3);"""
+        if self.check_initial_load('settings'):
+            try:
+                self.cur.execute(insert_user_default)
+                self.save()
+            except Exception as error:
+                return f'An error occurred while inserting in the table: {error}'
             self.initial_load = False
             return True
