@@ -192,7 +192,10 @@ VALUES ('English'), ('Português'), ('Español');
 
     def inserting_mode(self):
         insert_user_default = """INSERT INTO mode (name)
-VALUES ('multiplication'), ('division'), ('addition'), ('subtraction');"""
+VALUES ('multiplication, multiplicação, multiplicación'), 
+       ('division, divisão, división'), 
+       ('addition, adição, suma'), 
+       ('subtraction, subtração, sustracción');"""
         if self.check_initial_load('mode'):
             try:
                 self.cur.execute(insert_user_default)

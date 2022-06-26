@@ -10,7 +10,8 @@ class Startup:
         start_connection.inserting_language()
         start_connection.inserting_mode()
         start_connection.inserting_user_settings()
-        
+
         start_screen_settings = CreateScreenSettings()
         start_screen_settings.inserting_screen()
+        start_screen_settings.inserting_object_screen()
 
