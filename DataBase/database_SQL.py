@@ -150,8 +150,13 @@ class ConnectDataBase(Connection):
             return f'An error occurred while creating the table: {error}'
         return True
 
-    def check_initial_load(self):
-        select_initial_load = "SELECT 1 FROM user LIMIT 1;"
+    def check_initial_load(self, table, *where):
+        """insert name TABLE (not null) and restrictions WHERE or AND"""
+        select_initial_load = f"SELECT 1 FROM {table}"
+        for i, args in enumerate(where, start=0):
+            select_initial_load = f"{select_initial_load} \n {where[i]}"
+        select_initial_load = f"{select_initial_load} \n LIMIT 1"
+
         try:
             self.cur.execute(select_initial_load)
         except Exception as error:
@@ -163,10 +168,11 @@ class ConnectDataBase(Connection):
 
     def inserting_user_default(self):
         insert_user_default = "INSERT INTO user (name, age) VALUES ('User', 0);"
-        if self.check_initial_load():
+        if self.check_initial_load('user', 'WHERE 1 = 1', 'AND 2 = 2'):
             try:
                 self.cur.execute(insert_user_default)
                 self.save()
             except Exception as error:
                 return f'An error occurred while creating the table: {error}'
+            self.initial_load = False
             return True
