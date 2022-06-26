@@ -2,10 +2,11 @@ import os
 from kivymd.app import MDApp
 from kaki.app import App
 from kivy.factory import Factory
-from DataBase.DataBaseSQL import ConnectDataBase
+from DataBase.database_SQL import ConnectDataBase
 
 start = ConnectDataBase()
 start.create_table()
+start.inserting_user_default()
 
 
 # main app class for kaki app with kivymd modules

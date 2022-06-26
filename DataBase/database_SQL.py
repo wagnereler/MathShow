@@ -5,12 +5,14 @@ from os import path, getcwd
 class ConnectDataBase(Connection):
     connection = None
     DB_FILE = path.join(getcwd(), 'DataBase/math-show.db')
+    initial_load = False
 
     def __init__(self, db_fine=None):
         if db_fine is not None:
             self.connection = connect(db_fine)
         else:
             self.connection = connect(self.DB_FILE)
+        self.cur = self.connection.cursor()
 
     def save(self):
         self.connection.commit()
@@ -148,3 +150,23 @@ class ConnectDataBase(Connection):
             return f'An error occurred while creating the table: {error}'
         return True
 
+    def check_initial_load(self):
+        select_initial_load = "SELECT 1 FROM user LIMIT 1;"
+        try:
+            self.cur.execute(select_initial_load)
+        except Exception as error:
+            return f'An error occurred while try load data: {error}'
+        result = self.cur.fetchone()
+        if result != (1,):
+            self.initial_load = True
+        return self.initial_load
+
+    def inserting_user_default(self):
+        insert_user_default = "INSERT INTO user (name, age) VALUES ('User', 0);"
+        if self.check_initial_load():
+            try:
+                self.cur.execute(insert_user_default)
+                self.save()
+            except Exception as error:
+                return f'An error occurred while creating the table: {error}'
+            return True
